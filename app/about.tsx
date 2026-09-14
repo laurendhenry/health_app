@@ -32,7 +32,7 @@ export default function AboutScreen() {
         numberOfLines={5}
 
       />
-      <Button label = "Save" onClick={() => router.push('/(tabs)')}/>
+      <Button label = "Save" onClick={() => router.push('/(tabs)/entries')}/>
     </View>
   );
 }
