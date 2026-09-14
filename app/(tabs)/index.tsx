@@ -5,8 +5,9 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home screen</Text>
+      <Text></Text>
       <Link href="/about" style={styles.button}>
-        Create a new entry
+        Create new journal entry
       </Link>
     </View>
   );
