@@ -1,5 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export type MoodEntry = {
+  id: string;
+  mood: string;
+  note: string;
+  createdAt: string;
+};
 
 export const setItem = async (key: string, value: unknown) => {
   try {
@@ -52,18 +58,20 @@ export const getAllKeys = async () => {
   }
 };
 
-// export const getAllItems = async () => {
-//   try {
-//     const keys = await AsyncStorage.getAllKeys();
-//     const items = await AsyncStorage.multiGet(keys);
-//     return items.reduce((accumulator, [key, value]) => {
-//       accumulator[key] = JSON.parse(value);
-//       return accumulator;
-//     }, {});
-//   } catch (error) {
-//     console.error('Error getting all items:', error);
-//     return {};
-//   }
-// };
+export const getAllItems = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    const items = await AsyncStorage.multiGet(keys);
+    return items.reduce<Record<string, unknown>>((accumulator, [key, value]) => {
+      if (value !== null) {
+        accumulator[key] = JSON.parse(value);
+      }
+      return accumulator;
+    }, {});
+  } catch (error) {
+    console.error('Error getting all items:', error);
+    return {};
+  }
+};
 
 //https://www.freecodecamp.org/news/how-to-store-data-locally-in-react-native-expo/

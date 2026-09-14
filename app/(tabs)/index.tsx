@@ -5,7 +5,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>No journal entries yet</Text>
-      <Link href="/about" style={styles.button}>
+      <Link href="/journal" style={styles.button}>
         Create new journal entry
       </Link>
     </View>

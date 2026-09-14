@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import Button from '@/app/components/button';
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 //https://react.dev/reference/react/useState
@@ -18,7 +19,7 @@ export default function AboutScreen() {
         <View style={styles.moods}>
           <Button label = "Great" onClick={() => setMood('Great')}/>
           <Button label = "Good" onClick={() => setMood('Good')}/>
-          <Button label = "Nuetral" onClick={() => setMood('Nuetral')}/>
+          <Button label = "Neutral" onClick={() => setMood('Nuetral')}/>
           <Button label = "Bad" onClick={() => setMood('Bad')}/>
           <Button label = "Awful" onClick={() => setMood('Awful')}/>
         </View>
@@ -32,7 +33,9 @@ export default function AboutScreen() {
         numberOfLines={5}
 
       />
-      <Button label = "Save" onClick={() => router.push('/(tabs)/entries')}/>
+      <Button label = "Save" onClick={() => 
+        AsyncStorage.setItem('1', )
+        router.push('/(tabs)/entries')}/>
     </View>
   );
 }
