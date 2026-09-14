@@ -2,21 +2,26 @@
 import { useRef, useState } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import Button from '@/app/components/button';
+import { router } from "expo-router";
 
 
+//https://react.dev/reference/react/useState
 export default function AboutScreen() {
   // const inputRef = useRef<TextInputRef>(null);
   const [text, onChangeText] = useState('');
+  const [mood, setMood] = useState('');
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Daily Journal</Text>
       <View>
         <Text>How are you feeling today?</Text>
-        <Button label = "Great" />
-        <Button label = "Good" />
-        <Button label = "Nuetral" />
-        <Button label = "Bad" />
-        <Button label = "Awful" />
+        <View style={styles.moods}>
+          <Button label = "Great" onClick={() => setMood('Great')}/>
+          <Button label = "Good" onClick={() => setMood('Good')}/>
+          <Button label = "Nuetral" onClick={() => setMood('Nuetral')}/>
+          <Button label = "Bad" onClick={() => setMood('Bad')}/>
+          <Button label = "Awful" onClick={() => setMood('Awful')}/>
+        </View>
       </View>
       <TextInput
         // ref={inputRef}
@@ -25,10 +30,9 @@ export default function AboutScreen() {
         onChangeText={onChangeText}
         multiline
         numberOfLines={5}
-        // autoCapitalize
-        // autoComplete
+
       />
-      <Button label = "Save" />
+      <Button label = "Save" onClick={() => router.push('/(tabs)')}/>
     </View>
   );
 }
@@ -43,4 +47,10 @@ const styles = StyleSheet.create({
   text: {
     color: "#fff",
   },
+  moods: {
+    flexDirection: 'row',
+    gap: '5',
+    alignItems: 'center'
+  }
 });
+
