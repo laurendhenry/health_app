@@ -23,7 +23,6 @@ const handleSave = async (mood: string, text: string): Promise<void> => {
   try {
     await setItem(JOURNAL_ENTRIES_KEY, journalEntry);
 
-    
     Alert.alert('Saved', 'Your journal entry was saved.');
     router.back();
   } catch (error) {

@@ -1,9 +1,9 @@
-import { StyleSheet, View, Pressable, Text, GestureResponderEvent } from 'react-native';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
 
 type Props = {
   label: string;
   theme?: 'primary';
-  onClick: (event: GestureResponderEvent) => void;
+  onClick: () => void;
 };
 
 export default function Button({ label, theme='primary', onClick }: Props) {
@@ -16,7 +16,7 @@ export default function Button({ label, theme='primary', onClick }: Props) {
         ]}>
         <Pressable
           style={[styles.button, { backgroundColor: '#fff' }]}
-          onPress={() => onClick}>
+          onPress={onClick}>
           <Text style={[styles.buttonLabel, { color: '#25292e' }]}>{label}</Text>
         </Pressable>
       </View>
@@ -25,7 +25,7 @@ export default function Button({ label, theme='primary', onClick }: Props) {
 
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={() => onClick}>
+      <Pressable style={styles.button} onPress={onClick}>
         <Text style={styles.buttonLabel}>{label}</Text>
       </Pressable>
     </View>
