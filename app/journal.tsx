@@ -9,8 +9,6 @@ const JOURNAL_ENTRIES_KEY = '@moodlog_entries';
 
 
 const handleSave = async (mood: string, text: string): Promise<void> => {
-  
-  
   const createdAt = new Date().toString()
 
   const journalEntry: MoodEntry = {

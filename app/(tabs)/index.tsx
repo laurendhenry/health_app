@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>No journal entries yet</Text>
+      <Text style={styles.text}>home page not entries</Text>
       <Link href="/journal" style={styles.button}>
         Create new journal entry
       </Link>
