@@ -1,9 +1,34 @@
 // import { TextInput, type TextInputRef } from "@expo/ui";
 import { useRef, useState } from "react";
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, Alert } from "react-native";
 import Button from '@/app/components/button';
 import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MoodEntry, setItem } from "@/utils/AsyncStorage";
+
+const handleSave = async (mood: string, text: string): Promise<void> => {
+  
+  
+  const createdAt = new Date().toString()
+
+  const journalEntry: MoodEntry = {
+    id: createdAt, 
+    mood: mood, 
+    note: text, 
+    createdAt: createdAt
+  };
+
+  try {
+    await setItem(createdAt, journalEntry);
+
+    
+    Alert.alert('Saved', 'Your journal entry was saved.');
+    router.back();
+  } catch (error) {
+    console.error(error);
+    Alert.alert('Save failed', 'Please try again.');
+  }
+
+}
 
 
 //https://react.dev/reference/react/useState
@@ -33,9 +58,7 @@ export default function AboutScreen() {
         numberOfLines={5}
 
       />
-      <Button label = "Save" onClick={() => 
-        AsyncStorage.setItem('1', )
-        router.push('/(tabs)/entries')}/>
+      <Button label = "Save" onClick={() => handleSave(mood, text)}/>
     </View>
   );
 }
