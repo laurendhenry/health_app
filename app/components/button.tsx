@@ -1,60 +1,62 @@
 import { StyleSheet, View, Pressable, Text } from 'react-native';
+import { colors, spacing } from '../styles';
+
 
 type Props = {
   label: string;
-  theme?: 'primary';
+  selected?: boolean;
   onClick: () => void;
 };
 
-export default function Button({ label, theme='primary', onClick }: Props) {
-  if (theme === 'primary') {
-    return (
-      <View
-        style={[
-          styles.buttonContainer,
-          { borderWidth: 4, borderColor: '#ffdc68', borderRadius: 10 },
-        ]}>
-        <Pressable
-          style={[styles.button, { backgroundColor: '#fff' }]}
-          onPress={onClick}>
-          <Text style={[styles.buttonLabel, { color: '#25292e' }]}>{label}</Text>
-        </Pressable>
-      </View>
-    );
-  }
-
+export default function Button({ label, selected = false, onClick }: Props) {
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={onClick}>
-        <Text style={styles.buttonLabel}>{label}</Text>
+      <Pressable style={({ pressed }) => [
+          styles.button,
+          selected && styles.selectedButton,
+          pressed && styles.pressedButton,
+        ]}
+        onPress={onClick}>
+        <Text style={[styles.buttonLabel, selected && styles.selectedLabel]}>{label}</Text>
       </Pressable>
     </View>
   );
 }
 
+
 const styles = StyleSheet.create({
   buttonContainer: {
-    width: 100,
-    height: 68,
-    marginHorizontal: 20,
+    flexGrow: 1,
+    minWidth: 94,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 3,
   },
   button: {
-    borderRadius: 10,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 14,
+    borderWidth: 1,
     width: '100%',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  buttonIcon: {
-    paddingRight: 8,
+    paddingHorizontal: spacing.sm,
   },
   buttonLabel: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.textMuted,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  selectedButton: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  selectedLabel: {
+    color: colors.white,
+  },
+  pressedButton: {
+    opacity: 0.8,
   },
 });
 //https://docs.expo.dev/tutorial/build-a-screen/

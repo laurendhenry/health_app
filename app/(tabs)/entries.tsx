@@ -2,13 +2,10 @@ import { Link, useFocusEffect } from "expo-router";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { useState, useCallback } from 'react';
 import { MoodEntry, getAllItems } from "@/utils/AsyncStorage";
+import { commonStyles, colors, spacing} from '../styles';
 
 
 //https://reactnative.dev/docs/flatlist#horizontal
-const DATA = getAllItems();
-
-
-
 export default function Index() {
   const [entries, setEntries] = useState<MoodEntry[]>([]);
 
@@ -41,9 +38,10 @@ export default function Index() {
 
   return (
     <FlatList
+      style={commonStyles.screen}
       data={entries}
       keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.container}//{ padding: 16, gap: 12 }
+      contentContainerStyle={styles.content}
       ListEmptyComponent={
         <Link href="/journal" style={styles.button}>
            Create new journal entry
@@ -51,23 +49,15 @@ export default function Index() {
       }
       renderItem={({ item }) => (
         <View
-          style={{
-            backgroundColor: 'white',
-            borderRadius: 12,
-            padding: 16,
-          }}
+          style={[commonStyles.card, styles.entryCard]}
         >
-          <Text style={{ fontSize: 18, fontWeight: '600' }}>
-            {item.mood}
-          </Text>
+          <Text style={styles.mood}>{item.mood}</Text>
 
-          <Text style={{ color: '#666', marginTop: 4 }}>
+          <Text style={styles.date}>
             {new Date(item.createdAt).toLocaleString()}
           </Text>
 
-          <Text style={{ marginTop: 10 }}>
-            {item.note}
-          </Text>
+          <Text style={styles.note}>{item.note}</Text>
         </View>
       )}
     />
@@ -75,19 +65,59 @@ export default function Index() {
 }
 //https://reactnative.dev/docs/flatlist#horizontal
 
+//copilot agent
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#25292e",
-    alignItems: "center",
-    justifyContent: "center",
+  content: {
+    padding: spacing.lg,
+    paddingBottom: spacing.xxl,
+    gap: spacing.md,
   },
-  text: {
-    color: "#fff",
+  emptyContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+  },
+  emptyTitle: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   button: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 14,
+    marginTop: spacing.lg,
+    minHeight: 54,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  buttonLabel: {
+    color: colors.white,
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  entryCard: {
+    gap: spacing.sm,
+  },
+  entryHeader: {
+    gap: spacing.xs,
+  },
+  mood: {
+    color: colors.primaryDark,
     fontSize: 20,
-    textDecorationLine: "underline",
-    color: "#fff",
+    fontWeight: '800',
+  },
+  date: {
+    color: colors.textMuted,
+    fontSize: 13,
+  },
+  note: {
+    color: colors.text,
+    fontSize: 16,
+    lineHeight: 24,
   },
 });

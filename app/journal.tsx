@@ -1,9 +1,11 @@
 // import { TextInput, type TextInputRef } from "@expo/ui";
-import { useRef, useState } from "react";
-import { StyleSheet, Text, View, TextInput, Alert } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, View, TextInput, Alert, ScrollView } from "react-native";
 import Button from '@/app/components/button';
 import { router } from "expo-router";
 import { MoodEntry, setItem } from "@/utils/AsyncStorage";
+import { commonStyles, colors, spacing } from "./styles";
+
 
 const JOURNAL_ENTRIES_KEY = '@moodlog_entries';
 
@@ -37,46 +39,72 @@ export default function AboutScreen() {
   const [text, onChangeText] = useState('');
   const [mood, setMood] = useState('');
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Daily Journal</Text>
-      <View>
+    <ScrollView style={commonStyles.screen} contentContainerStyle={styles.content}>
+      <Text style={commonStyles.title}>Daily Journal</Text>
+      <View style={styles.section}>
         <Text>How are you feeling today?</Text>
         <View style={styles.moods}>
-          <Button label = "Great" onClick={() => setMood('Great')}/>
-          <Button label = "Good" onClick={() => setMood('Good')}/>
-          <Button label = "Neutral" onClick={() => setMood('Nuetral')}/>
-          <Button label = "Bad" onClick={() => setMood('Bad')}/>
-          <Button label = "Awful" onClick={() => setMood('Awful')}/>
+          {['Great', 'Good', 'Neutral', 'Bad', 'Awful'].map((option) => (
+            <Button
+              key={option}
+              label={option}
+              selected={mood === option}
+              //containerStyle={styles.moodButton}
+              onClick={() => setMood(option)}
+            />
+          ))}
         </View>
       </View>
       <TextInput
         // ref={inputRef}
         placeholder="Elaborate on why you feel this way."
+        style={styles.input}
         value={text}
         onChangeText={onChangeText}
         multiline
-        numberOfLines={5}
-
       />
       <Button label = "Save" onClick={() => handleSave(mood, text)}/>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#25292e",
-    justifyContent: "center",
-    alignItems: "center",
+  content: {
+    ...commonStyles.content,
+    paddingBottom: spacing.xxl,
   },
-  text: {
-    color: "#fff",
+  intro: {
+    marginTop: spacing.sm,
+  },
+  section: {
+    marginTop: spacing.xl,
   },
   moods: {
     flexDirection: 'row',
-    gap: '5',
-    alignItems: 'center'
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+  },
+  moodButton: {
+    flexBasis: '28%',
+  },
+  input: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 16,
+    borderWidth: 1,
+    color: colors.text,
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: spacing.xl,
+    minHeight: 152,
+    padding: spacing.md,
+  },
+  saveButton: {
+    flexBasis: '100%',
+    height: 56,
+    marginTop: spacing.lg,
   }
 });
+
 
