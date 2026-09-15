@@ -5,6 +5,9 @@ import Button from '@/app/components/button';
 import { router } from "expo-router";
 import { MoodEntry, setItem } from "@/utils/AsyncStorage";
 
+const JOURNAL_ENTRIES_KEY = '@moodlog_entries';
+
+
 const handleSave = async (mood: string, text: string): Promise<void> => {
   
   
@@ -18,7 +21,7 @@ const handleSave = async (mood: string, text: string): Promise<void> => {
   };
 
   try {
-    await setItem(createdAt, journalEntry);
+    await setItem(JOURNAL_ENTRIES_KEY, journalEntry);
 
     
     Alert.alert('Saved', 'Your journal entry was saved.');
