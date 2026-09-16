@@ -3,7 +3,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Alert, ScrollView } from "react-native";
 import Button from '@/app/components/button';
 import { router } from "expo-router";
-import { MoodEntry, setItem } from "@/utils/AsyncStorage";
+import { MoodEntry, setItem, getItem } from "@/utils/AsyncStorage";
 import { commonStyles, colors, spacing } from "./styles";
 
 
@@ -21,10 +21,17 @@ const handleSave = async (mood: string, text: string): Promise<void> => {
   };
 
   try {
-    await setItem(JOURNAL_ENTRIES_KEY, journalEntry);
+    const storedValue = await getItem(JOURNAL_ENTRIES_KEY);
+
+    const existingEntries: MoodEntry[] = Array.isArray(storedValue)
+      ? (storedValue as MoodEntry[])
+      : [];
+    const updatedEntries: MoodEntry[] = [journalEntry, ...existingEntries];
+
+    await setItem(JOURNAL_ENTRIES_KEY, updatedEntries);
 
     Alert.alert('Saved', 'Your journal entry was saved.');
-    router.back();
+    router.navigate('/entries');
   } catch (error) {
     console.error(error);
     Alert.alert('Save failed', 'Please try again.');

@@ -1,30 +1,24 @@
+import { MoodEntry, getItem } from "@/utils/AsyncStorage";
 import { Link, useFocusEffect } from "expo-router";
-import { StyleSheet, Text, View, FlatList } from "react-native";
-import { useState, useCallback } from 'react';
-import { MoodEntry, getAllItems } from "@/utils/AsyncStorage";
-import { commonStyles, colors, spacing} from '../styles';
+import { useCallback, useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { colors, commonStyles, spacing } from "../styles";
 
+const JOURNAL_ENTRIES_KEY = "@moodlog_entries";
 
 //https://reactnative.dev/docs/flatlist#horizontal
 export default function Index() {
   const [entries, setEntries] = useState<MoodEntry[]>([]);
-
-  const JOURNAL_ENTRIES_KEY = '@moodlog_entries';
-
   const loadEntries = async (): Promise<void> => {
-    
     try {
-      const allItems = await getAllItems();
-      console.log('Loaded entries:', allItems);
-      const savedEntries = Object.values(allItems) as MoodEntry[];
-      
-      console.log('Loaded entries:', savedEntries);
-      console.log('Is array?', Array.isArray(savedEntries));
-      console.log('Entry count:', savedEntries.length);
+      const storedValue = await getItem(JOURNAL_ENTRIES_KEY);
+      const savedEntries: MoodEntry[] = Array.isArray(storedValue)
+        ? (storedValue as MoodEntry[])
+        : [];
 
       setEntries(savedEntries);
     } catch (error) {
-      console.error('Could not load entries:', error);
+      console.error("Could not load entries:", error);
       setEntries([]);
     }
   };
@@ -33,7 +27,7 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       loadEntries();
-    }, [])
+    }, []),
   );
 
   return (
@@ -44,13 +38,11 @@ export default function Index() {
       contentContainerStyle={styles.content}
       ListEmptyComponent={
         <Link href="/journal" style={styles.button}>
-           Create new journal entry
+          Create new journal entry
         </Link>
       }
       renderItem={({ item }) => (
-        <View
-          style={[commonStyles.card, styles.entryCard]}
-        >
+        <View style={[commonStyles.card, styles.entryCard]}>
           <Text style={styles.mood}>{item.mood}</Text>
 
           <Text style={styles.date}>
@@ -74,31 +66,31 @@ const styles = StyleSheet.create({
   },
   emptyContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   emptyState: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: spacing.md,
   },
   emptyTitle: {
     color: colors.text,
     fontSize: 22,
-    fontWeight: '700',
-    textAlign: 'center',
+    fontWeight: "700",
+    textAlign: "center",
   },
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.primary,
     borderRadius: 14,
     marginTop: spacing.lg,
     minHeight: 54,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: spacing.lg,
   },
   buttonLabel: {
     color: colors.white,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   entryCard: {
     gap: spacing.sm,
@@ -109,7 +101,7 @@ const styles = StyleSheet.create({
   mood: {
     color: colors.primaryDark,
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   date: {
     color: colors.textMuted,
