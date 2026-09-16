@@ -1,19 +1,33 @@
 import { Link } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
-import { commonStyles, spacing, colors } from "../styles";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import Button from "../components/button";
+import { colors, commonStyles, spacing } from "../styles";
 
 export default function Index() {
   return (
-    <View style={commonStyles.screen}>
-      <Text style={styles.title}>Your daily check-in.</Text>
-      <Link href="/journal" style={styles.button}>
-        <Text style={styles.buttonLabel}>Create new journal entry</Text>
+    <ScrollView
+      style={commonStyles.content}
+      contentContainerStyle={styles.centeredContent}
+    >
+      <Text style={[commonStyles.heading, styles.centeredHeading]}>
+        Your daily check-in.
+      </Text>
+      <Link href="/journal">
+        <Button label="Create a journal entry" />
       </Link>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  centeredContent: {
+    alignItems: "center",
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  centeredHeading: {
+    textAlign: "center",
+  },
   title: {
     ...commonStyles.title,
     marginTop: spacing.sm,
@@ -36,6 +50,5 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
     fontSize: 15,
     fontWeight: "700",
-    alignItems: "center",
   },
 });
