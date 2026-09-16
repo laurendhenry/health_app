@@ -1,44 +1,31 @@
 // import { TextInput, type TextInputRef } from "@expo/ui";
-import { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Alert, ScrollView } from "react-native";
 import Button from '@/app/components/button';
+import { db } from "@/firebaseConfig";
 import { router } from "expo-router";
-import { MoodEntry, setItem, getItem } from "@/utils/AsyncStorage";
-import { commonStyles, colors, spacing } from "./styles";
+import { addDoc, collection } from "firebase/firestore";
+import { useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { colors, commonStyles, spacing } from "./styles";
 
 
 const JOURNAL_ENTRIES_KEY = '@moodlog_entries';
 
 
 const handleSave = async (mood: string, text: string): Promise<void> => {
-  const createdAt = new Date().toString()
-
-  const journalEntry: MoodEntry = {
-    id: createdAt, 
-    mood: mood, 
-    note: text, 
-    createdAt: createdAt
-  };
-
   try {
-    const storedValue = await getItem(JOURNAL_ENTRIES_KEY);
-
-    const existingEntries: MoodEntry[] = Array.isArray(storedValue)
-      ? (storedValue as MoodEntry[])
-      : [];
-    const updatedEntries: MoodEntry[] = [journalEntry, ...existingEntries];
-
-    await setItem(JOURNAL_ENTRIES_KEY, updatedEntries);
+    await addDoc(collection(db, "healthapp"), {
+      mood: mood,
+      note: text,
+      createdAt: new Date(),
+    });
 
     Alert.alert('Saved', 'Your journal entry was saved.');
-    router.navigate('/entries');
+    router.back();
   } catch (error) {
-    console.error(error);
+    console.error("Error saving journal entry:", error);
     Alert.alert('Save failed', 'Please try again.');
   }
-
-}
-
+};
 
 //https://react.dev/reference/react/useState
 export default function AboutScreen() {
