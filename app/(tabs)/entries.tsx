@@ -9,7 +9,7 @@ interface FirestoreEntry {
   id: string;
   mood: string;
   note: string;
-  createdAt: any;
+  createdAt: Date;
 }
 
 //https://reactnative.dev/docs/flatlist#horizontal
@@ -20,21 +20,26 @@ export default function Index() {
     try {
       // If you are using the shared test filter across devices, use query/where:
       const q = query(
-        collection(db, "healthapp"), 
+        collection(db, "healthapp"),
         where("testGroup", "==", SHARED_TEST_GROUP)
       );
-      
+
       const querySnapshot = await getDocs(q);
       console.log("Raw Firestore documents found:", querySnapshot.size);
-      const savedEntries = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          mood: data.mood,
-          note: data.note,
+      const savedEntries = querySnapshot.docs
+        .map((document) => {
+          const data = document.data();
+          return {
+            id: document.id,
+            mood: data.mood,
+            note: data.note,
           createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
-        };
-      }) as FirestoreEntry[];
+          };
+        })
+        .sort(
+          (firstEntry, secondEntry) =>
+            secondEntry.createdAt.getTime() - firstEntry.createdAt.getTime(),
+        ) as FirestoreEntry[];
 
       console.log('Loaded Firestore entries count:', savedEntries.length);
       setEntries(savedEntries);
@@ -66,11 +71,7 @@ export default function Index() {
         <View style={[commonStyles.card, styles.entryCard]}>
           <Text style={styles.mood}>{item.mood}</Text>
 
-          <Text style={styles.date}>
-            {item.createdAt instanceof Date 
-              ? item.createdAt.toLocaleString() 
-              : new Date().toLocaleString()}
-          </Text>
+          <Text style={styles.date}>{item.createdAt.toLocaleString()}</Text>
 
           <Text style={styles.note}>{item.note}</Text>
         </View>
