@@ -1,6 +1,6 @@
 // import { TextInput, type TextInputRef } from "@expo/ui";
 import Button from '@/app/components/button';
-import { db } from "@/firebaseConfig";
+import { db, SHARED_TEST_GROUP } from "@/firebaseConfig";
 import { router } from "expo-router";
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
@@ -16,11 +16,12 @@ const handleSave = async (mood: string, text: string): Promise<void> => {
     await addDoc(collection(db, "healthapp"), {
       mood: mood,
       note: text,
+      testGroup: SHARED_TEST_GROUP,
       createdAt: new Date(),
     });
 
     Alert.alert('Saved', 'Your journal entry was saved.');
-    router.back();
+    router.replace('/entries');
   } catch (error) {
     console.error("Error saving journal entry:", error);
     Alert.alert('Save failed', 'Please try again.');

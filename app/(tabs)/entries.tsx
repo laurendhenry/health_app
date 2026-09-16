@@ -1,24 +1,45 @@
-import { MoodEntry, getItem } from "@/utils/AsyncStorage";
+import { db, SHARED_TEST_GROUP } from "@/firebaseConfig"; // <-- Added Firestore db config
 import { Link, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { colors, commonStyles, spacing } from "../styles";
+import { colors, commonStyles, spacing } from '../styles';
 
-const JOURNAL_ENTRIES_KEY = "@moodlog_entries";
+interface FirestoreEntry {
+  id: string;
+  mood: string;
+  note: string;
+  createdAt: any;
+}
 
 //https://reactnative.dev/docs/flatlist#horizontal
 export default function Index() {
-  const [entries, setEntries] = useState<MoodEntry[]>([]);
+  const [entries, setEntries] = useState<FirestoreEntry[]>([]);
+
   const loadEntries = async (): Promise<void> => {
     try {
-      const storedValue = await getItem(JOURNAL_ENTRIES_KEY);
-      const savedEntries: MoodEntry[] = Array.isArray(storedValue)
-        ? (storedValue as MoodEntry[])
-        : [];
+      // If you are using the shared test filter across devices, use query/where:
+      const q = query(
+        collection(db, "healthapp"), 
+        where("testGroup", "==", SHARED_TEST_GROUP)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      console.log("Raw Firestore documents found:", querySnapshot.size);
+      const savedEntries = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          mood: data.mood,
+          note: data.note,
+          createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
+        };
+      }) as FirestoreEntry[];
 
+      console.log('Loaded Firestore entries count:', savedEntries.length);
       setEntries(savedEntries);
     } catch (error) {
-      console.error("Could not load entries:", error);
+      console.error('Could not load entries from Firestore:', error);
       setEntries([]);
     }
   };
@@ -27,7 +48,7 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       loadEntries();
-    }, []),
+    }, [])
   );
 
   return (
@@ -46,7 +67,9 @@ export default function Index() {
           <Text style={styles.mood}>{item.mood}</Text>
 
           <Text style={styles.date}>
-            {new Date(item.createdAt).toLocaleString()}
+            {item.createdAt instanceof Date 
+              ? item.createdAt.toLocaleString() 
+              : new Date().toLocaleString()}
           </Text>
 
           <Text style={styles.note}>{item.note}</Text>
